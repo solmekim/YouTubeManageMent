@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">YouTubeVideoManagement</string>
+    <string name="app_main_title">"특별한 YouTube"</string>
+
+    <string name="YOUTUBE_API_KEY">"AIzaSyDrQQj5vLzDj7DzvzI2FZzJhgLAv0lj7f4"</string>
+
+    <string name="ok">"확인"</string>
+    <string name="cancel">"취소"</string>
+    <string name="type">"type"</string>
+    <string name="tagIndex">"tagIndex"</string>
+
+    <string name="tryAgain">"잠시 후 다시 시도해 주세요."</string>
+    <string name="addVideo_sucess">"영상이 정상적으로 추가 되었습니다."</string>
+    <string name="tab_videokind">"영상종류"</string>
+    <string name="videoNameList">"videoNameList"</string>
+    <string name="videoTabInfoList">"videoTabInfoList"</string>
+    <string name="modifyVideoInfo">"modifyVideoInfo"</string>
+
+    <string name="videoType">"videoType"</string>
+    <string name="VideoTab">"VideoTab"</string>
+    <string name="VideoTitle">"VideoTitle"</string>
+    <string name="VideoUploadTime">"VideoUploadTime"</string>
+    <string name="VideoUrl">"VideoUrl"</string>
+    <string name="VideoID">"VideoID"</string>
+    <string name="VideoDescription">"VideoDescription"</string>
+    <string name="VideoViewCount">"VideoViewCount"</string>
+    <string name="VideoDuration">"VideoDuration"</string>
+
+    <string name="checkURL">"URL을 확인후 등록해주세요."</string>
+    <string name="insertURL">"URL을 입력해주세요"</string>
+    <string name="searchVideo_error">"영상 검색에 실패 하였습니다.\n개발자 메일로 문의 부탁드립니다."</string>
+    <string name="insertBlankOrURL">"공백 값을 입력하거나 URL을 확인(실행)해주세요."</string>
+    <string name="checkVideo">"URL 동영상이 나오는지 반드시 확인하고 업로드 해주세요.\n"</string>
+    <string name="delete_video">"영상 종류를 정말 삭제 하시겠습니까?"</string>
+    <string name="enter_videoType">"영상 종류를 입력해주세요"</string>
+    <string name="confirm_enter_videoType">"의 영상 종류를 추가 하시겠습니까?"</string>
+    <string name="videoAlreadyExist">"이미 등록된 영상종류가 있습니다. 영상 종류를 확인해주세요."</string>
+    <string name="addNewVideoType">"새로운 영상 종류가 등록 완료 되었습니다."</string>
+    <string name="addNewVideo">"새로운 영상이 등록 완료 되었습니다."</string>
+    <string name="addVideoTypeError">"새로운 영상 종류 추가 중 에러가 발생했습니다.\n개발자 메일로 문의 부탁드립니다."</string>
+    <string name="editVideoError">"영상 수정에 오류가 있습니다.\n개발자 메일로 문의 부탁드립니다.</string>
+    <string name="video_exist">"해당 영상 종류에 등록된 동영상이 있어 삭제 할수 없습니다"</string>
+    <string name="delete_videoTab_success">"영상종류를 정상적으로 삭제 하였습니다."</string>
+    <string name="video_not_select">"선택된 동영상이 없습니다."</string>
+    <string name="delete_select_video">"선택한 동영상을 삭제 하시겠습니까?"</string>
+    <string name="video_delete_error">"동영상 삭제에 문제가 있습니다.\n개발자 메일로 문의 부탁드립니다.</string>
+    <string name="editVideoInfo">"제목과 내용을 정말 수정 하시겠습니까?"</string>
+</resources>
