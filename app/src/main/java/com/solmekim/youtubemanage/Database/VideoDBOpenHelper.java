@@ -49,6 +49,14 @@ public class VideoDBOpenHelper {
         this.context = context;
     }
 
+    public boolean isCheckDBOpen() {
+        if(databaseHelper != null && sqLiteDatabase != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     public VideoDBOpenHelper open() throws SQLException {
         databaseHelper = new DatabaseHelper(context, databaseName, null, DATABASE_VERSION);
         sqLiteDatabase = databaseHelper.getWritableDatabase();
@@ -137,6 +145,7 @@ public class VideoDBOpenHelper {
     }
 
     public void close() {
+        databaseHelper = null;
         sqLiteDatabase.close();
     }
 }

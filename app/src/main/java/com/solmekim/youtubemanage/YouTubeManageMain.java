@@ -43,8 +43,10 @@ public class YouTubeManageMain extends AppCompatActivity implements InterfaceCla
 
 
         videoDBOpenHelper = new VideoDBOpenHelper(this);
-        videoDBOpenHelper.open();
-        videoDBOpenHelper.create();
+        if (!videoDBOpenHelper.isCheckDBOpen()) {
+            videoDBOpenHelper.open();
+            videoDBOpenHelper.create();
+        }
 
         viewPager = (ViewPager) findViewById(R.id.viewpager);
         tabLayout = (TabLayout) findViewById(R.id.sliding_tabs);
