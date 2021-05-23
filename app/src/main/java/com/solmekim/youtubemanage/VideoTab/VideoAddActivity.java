@@ -22,19 +22,18 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.solmekim.youtubemanage.Database.VideoDBOpenHelper;
 import com.solmekim.youtubemanage.R;
 import com.solmekim.youtubemanage.Util.Util;
+import com.solmekim.youtubemanage.provider.YouTubeManageContract;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 
+import static android.content.Intent.ACTION_SEND;
 import static com.solmekim.youtubemanage.Util.Util.extractYTId;
 
 public class VideoAddActivity extends YouTubeBaseActivity {
-
-    private VideoDBOpenHelper videoDBOpenHelper;
 
     private YouTubePlayerView youTubePlayerView;
     private YouTubePlayer youTubePlayer;
@@ -59,7 +58,7 @@ public class VideoAddActivity extends YouTubeBaseActivity {
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
 
-        if (getIntent().ACTION_SEND.equals(getIntent().getAction())
+        if (ACTION_SEND.equals(getIntent().getAction())
                 && getIntent().getType().equals("text/plain") ) {
             shareUrl = getIntent().getStringExtra(Intent.EXTRA_TEXT);
         }
@@ -71,12 +70,6 @@ public class VideoAddActivity extends YouTubeBaseActivity {
 
     private void init() {
 
-        videoDBOpenHelper = new VideoDBOpenHelper(this);
-
-        if (!videoDBOpenHelper.isCheckDBOpen()) {
-            videoDBOpenHelper.open();
-            videoDBOpenHelper.create();
-        }
         checkURL = false;
         VideoDuration = -1;
 
@@ -95,7 +88,7 @@ public class VideoAddActivity extends YouTubeBaseActivity {
             videotypeSpinner.setVisibility(View.VISIBLE);
 
             ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item);
-            Cursor cursor = videoDBOpenHelper.selectVideoTabAllColumns();
+            Cursor cursor = YouTubeManageContract.selectVideoTabAllColumns(this);
 
             if (cursor != null && shareUrl != null) {
                 while(cursor.moveToNext()) {
@@ -165,6 +158,12 @@ public class VideoAddActivity extends YouTubeBaseActivity {
                         break;
                     }
 
+                    if (videotypeSpinner.getSelectedItem() == null) {
+                        Util.MakeToast(getString(R.string.requestNewVideoType), getApplicationContext());
+                        finish();
+                        break;
+                    }
+
                     VideoDuration = youTubePlayer.getDurationMillis();
 
                     if (VideoDuration == -1) {
@@ -186,23 +185,10 @@ public class VideoAddActivity extends YouTubeBaseActivity {
                                 type = videotypeSpinner.getSelectedItem().toString();
                             }
 
-                            if (videoDBOpenHelper.insertVideoTabValueColumn(type, videoTitle.getText().toString(), 0,
+                            if (YouTubeManageContract.insertVideoTabValueColumn(getApplicationContext(), type, videoTitle.getText().toString(), 0,
                                     VideoDuration, getTodayTime(), urlLink.getText().toString(), Util.extractYTId(urlLink.getText().toString()),
-                                    videoDescription.getText().toString()) > 0) {
+                                    videoDescription.getText().toString()) != null) {
                                 Util.MakeToast(getString(R.string.addNewVideo), getApplicationContext());
-
-                                videoTabValue.put(getResources().getString(R.string.VideoTab), type);
-                                videoTabValue.put(getResources().getString(R.string.VideoTitle), videoTitle.getText().toString());
-                                videoTabValue.put(getResources().getString(R.string.VideoViewCount), "0");
-                                videoTabValue.put(getResources().getString(R.string.VideoUploadTime), getTodayTime());
-                                videoTabValue.put(getResources().getString(R.string.VideoUrl), urlLink.getText().toString());
-                                videoTabValue.put(getResources().getString(R.string.VideoID), extractYTId(urlLink.getText().toString()));
-                                videoTabValue.put(getResources().getString(R.string.VideoDescription), videoDescription.getText().toString());
-                                videoTabValue.put(getResources().getString(R.string.VideoDuration), VideoDuration + "");
-
-                                Intent resultIntent = new Intent();
-                                resultIntent.putExtra(getResources().getString(R.string.videoTabInfoList), videoTabValue);
-                                setResult(RESULT_OK, resultIntent);
                                 finish();
                             }
                             return false;

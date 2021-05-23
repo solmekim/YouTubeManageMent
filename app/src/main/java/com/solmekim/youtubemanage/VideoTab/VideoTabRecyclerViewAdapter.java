@@ -14,8 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.solmekim.youtubemanage.Database.VideoDBOpenHelper;
 import com.solmekim.youtubemanage.R;
+import com.solmekim.youtubemanage.provider.YouTubeManageContract;
 
 
 import java.text.ParseException;
@@ -28,8 +28,6 @@ import static com.solmekim.youtubemanage.Util.Util.extractYTId;
 
 
 public class VideoTabRecyclerViewAdapter extends RecyclerView.Adapter<VideoViewHolder> {
-
-    private VideoDBOpenHelper dataBaseOpenHelper;
 
     private Fragment fragment;
     private Context context;
@@ -45,14 +43,11 @@ public class VideoTabRecyclerViewAdapter extends RecyclerView.Adapter<VideoViewH
         isSelectMode = selectMode;
     }
 
-
     private int tagIndex;
-
 
     public VideoTabRecyclerViewAdapter(ArrayList<VideoTab> videoTabInfoArrayList, Fragment fragment) {
         this.videoTabInfoArrayList = videoTabInfoArrayList;
         this.fragment = fragment;
-
         isSelectMode = false;
     }
 
@@ -62,7 +57,6 @@ public class VideoTabRecyclerViewAdapter extends RecyclerView.Adapter<VideoViewH
 
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.youtube_list, parent, false);
         context = parent.getContext();
-        dataBaseOpenHelper = new VideoDBOpenHelper(context);
 
         return new VideoViewHolder(v);
     }
@@ -119,23 +113,23 @@ public class VideoTabRecyclerViewAdapter extends RecyclerView.Adapter<VideoViewH
 
                     try {    // update ViewCount
 
-                        dataBaseOpenHelper.updateVideoViewCountColumn(videoTabInfoArrayList.get(tagIndex).getVideoTitle(), videoTabInfoArrayList.get(tagIndex).getVideoUploadTime()
-                                , videoTabInfoArrayList.get(tagIndex).getVideoUrl());
+                        if (YouTubeManageContract.updateVideoViewCountColumn(fragment.getContext()
+                                , videoTabInfoArrayList.get(tagIndex).getVideoTitle(), videoTabInfoArrayList.get(tagIndex).getVideoUploadTime(), videoTabInfoArrayList.get(tagIndex).getVideoUrl()) != -1) {
 
-                        videoTabInfoArrayList.get(tagIndex).setVideoViewCount(videoTabInfoArrayList.get(tagIndex).getVideoViewCount() + 1);
-                        notifyDataSetChanged();
+                            videoTabInfoArrayList.get(tagIndex).setVideoViewCount(videoTabInfoArrayList.get(tagIndex).getVideoViewCount() + 1);
+                            notifyDataSetChanged();
 
-                        Intent intent = new Intent(context, YouTubePlayActivity.class);
-                        intent.putExtra(context.getResources().getString(R.string.VideoTab), videoTabInfoArrayList.get(tagIndex).getVideoTab());
-                        intent.putExtra(context.getResources().getString(R.string.VideoUrl), extractYTId(videoTabInfoArrayList.get(tagIndex).getVideoUrl()));
-                        intent.putExtra(context.getResources().getString(R.string.VideoTitle), videoTabInfoArrayList.get(tagIndex).getVideoTitle());
-                        intent.putExtra(context.getResources().getString(R.string.VideoViewCount), videoTabInfoArrayList.get(tagIndex).getVideoViewCount());
-                        intent.putExtra(context.getResources().getString(R.string.VideoUploadTime), videoTabInfoArrayList.get(tagIndex).getVideoUploadTime());
-                        intent.putExtra(context.getResources().getString(R.string.VideoDescription), videoTabInfoArrayList.get(tagIndex).getVideoDescription());
-                        intent.putExtra(context.getResources().getString(R.string.tagIndex), tagIndex);
+                            Intent intent = new Intent(context, YouTubePlayActivity.class);
+                            intent.putExtra(context.getResources().getString(R.string.VideoTab), videoTabInfoArrayList.get(tagIndex).getVideoTab());
+                            intent.putExtra(context.getResources().getString(R.string.VideoUrl), extractYTId(videoTabInfoArrayList.get(tagIndex).getVideoUrl()));
+                            intent.putExtra(context.getResources().getString(R.string.VideoTitle), videoTabInfoArrayList.get(tagIndex).getVideoTitle());
+                            intent.putExtra(context.getResources().getString(R.string.VideoViewCount), videoTabInfoArrayList.get(tagIndex).getVideoViewCount());
+                            intent.putExtra(context.getResources().getString(R.string.VideoUploadTime), videoTabInfoArrayList.get(tagIndex).getVideoUploadTime());
+                            intent.putExtra(context.getResources().getString(R.string.VideoDescription), videoTabInfoArrayList.get(tagIndex).getVideoDescription());
+                            intent.putExtra(context.getResources().getString(R.string.tagIndex), tagIndex);
 
-                        fragment.startActivityForResult(intent, 2);
-
+                            fragment.startActivityForResult(intent, 2);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }

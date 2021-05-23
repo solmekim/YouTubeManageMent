@@ -2,6 +2,8 @@ package com.solmekim.youtubemanage;
 
 import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
+import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,6 +14,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 import com.solmekim.youtubemanage.VideoTab.VideoTab;
 import com.solmekim.youtubemanage.VideoTab.VideoTabFragment;
 import com.solmekim.youtubemanage.VideoType.VideoTypeListFragment;
+import com.solmekim.youtubemanage.observer.YouTubeManageObserver;
+import com.solmekim.youtubemanage.provider.YouTubeManageContract;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,16 +30,46 @@ public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
     private ArrayList<String> totalTabNameList;
     private List<HashMap<String, ArrayList<VideoTab>>> totalVideoTabList;
 
+    private YouTubeManageObserver mYoutubeManageObserver;
+
     public ViewPagerFragmentAdapter(FragmentManager fm, Context context, ArrayList<String> totalTabNameList,
                                     ArrayList<String> videoNameList,
                                     List<HashMap<String, ArrayList<VideoTab>>> totalVideoTabList, Activity activity) {
         super(fm);
-
         this.context = context;
-        this.videoNameList = videoNameList;
         this.totalTabNameList = totalTabNameList;
+        this.videoNameList = videoNameList;
         this.totalVideoTabList = totalVideoTabList;
         this.activity = activity;
+        mYoutubeManageObserver = new YouTubeManageObserver(new Handler()) {
+            @Override
+            public void onChange(boolean selfChange) {
+                super.onChange(selfChange);
+
+                Cursor cursor = YouTubeManageContract.selectVideoTabValueAllColumns(context);
+
+                if(cursor.moveToLast()) {
+
+                    String VideoTab = cursor.getString(cursor.getColumnIndex(YouTubeManageContract.VideoTab));
+                    String VideoTitle = cursor.getString(cursor.getColumnIndex(YouTubeManageContract.VideoTitle));
+                    int VideoViewCount = cursor.getInt(cursor.getColumnIndex(YouTubeManageContract.VideoViewCount));
+                    String VideoUploadTime = cursor.getString(cursor.getColumnIndex(YouTubeManageContract.VideoUploadTime));
+                    String VideoUrl = cursor.getString(cursor.getColumnIndex(YouTubeManageContract.VideoUrl));
+                    String VideoDescription = cursor.getString(cursor.getColumnIndex(YouTubeManageContract.VideoDescription));
+                    int VideoDuration = cursor.getInt(cursor.getColumnIndex(YouTubeManageContract.VideoDuration));
+
+                    VideoTab videoTab = new VideoTab(VideoTab, VideoTitle, VideoViewCount, VideoDuration, VideoUploadTime, VideoUrl, VideoDescription);
+
+                    for (int i = 0; i < videoNameList.size(); i++) {
+                        if (videoNameList.get(i).equals(VideoTab)) {
+                            totalVideoTabList.get(i).get(videoNameList.get(i)).add(videoTab);
+                        }
+                    }
+                }
+                notifyDataSetChanged();
+            }
+        };
+        mYoutubeManageObserver.registerObserver(context);
     }
 
     @NonNull
@@ -53,11 +87,7 @@ public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
                 if(value.equals(videoNameList.get(i))) {
                     HashMap<String, ArrayList<VideoTab>> videoTabInfoList = new HashMap<>();
 
-                    ArrayList<VideoTab> videoTab;
-
-                    videoTab = totalVideoTabList.get(i).get(videoNameList.get(i));
-
-                    videoTabInfoList.put(context.getResources().getString(R.string.videoTabInfoList), videoTab);
+                    videoTabInfoList.put(context.getResources().getString(R.string.videoTabInfoList), totalVideoTabList.get(i).get(videoNameList.get(i)));
 
                     return VideoTabFragment.newInstance(videoTabInfoList, value);
                 }
@@ -111,5 +141,9 @@ public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
 
         notifyDataSetChanged();
 
+    }
+
+    public void destory() {
+        mYoutubeManageObserver.unregisterObserver(context);
     }
 }

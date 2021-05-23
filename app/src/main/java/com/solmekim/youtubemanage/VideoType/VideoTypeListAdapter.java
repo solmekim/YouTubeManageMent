@@ -11,16 +11,15 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.solmekim.youtubemanage.Database.VideoDBOpenHelper;
 import com.solmekim.youtubemanage.R;
 import com.solmekim.youtubemanage.Util.InterfaceClass;
 import com.solmekim.youtubemanage.Util.Util;
+import com.solmekim.youtubemanage.provider.YouTubeManageContract;
 
 import java.util.ArrayList;
 
 public class VideoTypeListAdapter extends BaseAdapter {
 
-    private VideoDBOpenHelper dataBaseOpenHelper;
     private InterfaceClass.SendDeleteVideoTabInfoToActivity sendDeleteVideoTabInfoToActivity;
 
     private ArrayList<String> videoNameList;
@@ -36,8 +35,6 @@ public class VideoTypeListAdapter extends BaseAdapter {
     }
 
     public VideoTypeListAdapter(Context context, Activity parentActivity, ArrayList<String> videoNameList) {
-
-        this.dataBaseOpenHelper = new VideoDBOpenHelper(context);
         this.context = context;
         this.layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.parentActivity = parentActivity;
@@ -111,7 +108,7 @@ public class VideoTypeListAdapter extends BaseAdapter {
 
     private void deleteVideo(String videoType, int index) {
 
-        if(dataBaseOpenHelper.deleteVideoTab(videoType) >0) {
+        if(YouTubeManageContract.deleteVideoTab(context, videoType) >0) {
             Util.MakeToast(context.getString(R.string.delete_videoTab_success),  context);
 
             sendDeleteVideoTabInfoToActivity.sendDeleteVideoTabInfo(videoType);

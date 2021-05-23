@@ -11,16 +11,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".YouTubeManageMain">
+
+        <activity android:name=".YouTubeManageMain"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
 
-        <activity
-            android:name=".VideoTab.VideoAddActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -28,9 +26,18 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".VideoTab.VideoAddActivity"/>
+
         <activity
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:name=".VideoTab.YouTubePlayActivity"/>
+            android:name=".VideoTab.YouTubePlayActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize" />
+
+        <provider
+            android:name=".provider.YouTubeManageProvider"
+            android:authorities="com.solmekim.youtubemanage"
+            android:enabled="true"
+            android:exported="true"
+            android:readPermission="com.lge.rearhome.permission.READ_SETTINGS"/>
 
     </application>
 

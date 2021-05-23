@@ -23,9 +23,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.solmekim.youtubemanage.Database.VideoDBOpenHelper;
 import com.solmekim.youtubemanage.R;
 import com.solmekim.youtubemanage.Util.Util;
+import com.solmekim.youtubemanage.provider.YouTubeManageContract;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,8 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class VideoTabFragment extends Fragment {
-
-    private VideoDBOpenHelper dataBaseOpenHelper;
 
     private String type;
 
@@ -61,6 +59,7 @@ public class VideoTabFragment extends Fragment {
 
     private String selectedValue;
 
+    private int mSizeFlag;
 
     public static VideoTabFragment newInstance(HashMap<String, ArrayList<VideoTab>> videoTabInfoList, String type) {
 
@@ -80,7 +79,7 @@ public class VideoTabFragment extends Fragment {
 
         type = getArguments().getString(getContext().getResources().getString(R.string.type));
         videoTabInfoArrayList = getArguments().getParcelableArrayList(getResources().getString(R.string.videoTabInfoList));
-        dataBaseOpenHelper = new VideoDBOpenHelper(getContext());
+        mSizeFlag = videoTabInfoArrayList.size();
 
         super.onCreate(savedInstanceState);
     }
@@ -139,8 +138,6 @@ public class VideoTabFragment extends Fragment {
         }
         videoTabRecyclerViewAdapter = new VideoTabRecyclerViewAdapter(videoTabInfoArrayList, this);
         contentRecyclerView.setAdapter(videoTabRecyclerViewAdapter);
-
-
     }
 
     AppCompatCheckBox.OnCheckedChangeListener onCheckedChangeListener = new CompoundButton.OnCheckedChangeListener() {
@@ -176,8 +173,6 @@ public class VideoTabFragment extends Fragment {
 
         }
     };
-
-
 
     View.OnClickListener onClickListener = new View.OnClickListener() {
         @Override
@@ -219,7 +214,7 @@ public class VideoTabFragment extends Fragment {
                                             return;
                                         }
 
-                                        if(dataBaseOpenHelper.deleteYoutubeVideo(videoTabInfoList) >0) {
+                                        if(YouTubeManageContract.deleteYoutubeVideo(getContext(), videoTabInfoList) >0) {
                                             for(int i = matchIndex.size() -1 ; i >= 0; i--) {
                                                 int value = matchIndex.get(i);
                                                 videoTabInfoArrayList.remove(value);
@@ -334,25 +329,6 @@ public class VideoTabFragment extends Fragment {
 
             switch (requestCode) {
 
-                case 1: // video ADD Call back
-
-                    HashMap<String, String> hashMap = (HashMap<String, String>) data.getSerializableExtra(getResources().getString(R.string.videoTabInfoList));
-                    String Videotab = hashMap.get(getResources().getString(R.string.VideoTab));
-                    String VideoTitle = hashMap.get(getResources().getString(R.string.VideoTitle));
-                    int VideoViewCount = Integer.parseInt(hashMap.get(getResources().getString(R.string.VideoViewCount)));
-                    int VideoDuration = Integer.parseInt(hashMap.get(getResources().getString(R.string.VideoDuration)));
-                    String VideoUploadTime = hashMap.get(getResources().getString(R.string.VideoUploadTime));
-                    String VideoUrl = hashMap.get(getResources().getString(R.string.VideoUrl));
-                    String VideoDescription = hashMap.get(getResources().getString(R.string.VideoDescription));
-
-
-                    VideoTab videoTabInfo = new VideoTab(Videotab, VideoTitle, VideoViewCount, VideoDuration, VideoUploadTime, VideoUrl, VideoDescription);
-                    videoTabInfoArrayList.add(videoTabInfo);
-
-                    videoTabRecyclerViewAdapter.notifyDataSetChanged();
-
-                    break;
-
                 case 2: // video edit call back
 
                     HashMap<String, String> modifyVideoInfo = (HashMap<String, String>) data.getSerializableExtra(getResources().getString(R.string.modifyVideoInfo));
@@ -367,8 +343,18 @@ public class VideoTabFragment extends Fragment {
                     videoTabRecyclerViewAdapter.notifyDataSetChanged();
 
                     break;
-
             }
         }
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mSizeFlag != videoTabInfoArrayList.size()) {
+            videoTabRecyclerViewAdapter.notifyDataSetChanged();
+            mSizeFlag = videoTabInfoArrayList.size();
+        }
+    }
+
+
 }

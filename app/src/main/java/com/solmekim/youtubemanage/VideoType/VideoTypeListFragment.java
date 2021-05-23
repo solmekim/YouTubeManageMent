@@ -20,16 +20,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.solmekim.youtubemanage.Database.VideoDBOpenHelper;
 import com.solmekim.youtubemanage.R;
 import com.solmekim.youtubemanage.Util.InterfaceClass;
 import com.solmekim.youtubemanage.Util.Util;
+import com.solmekim.youtubemanage.provider.YouTubeManageContract;
 
 import java.util.ArrayList;
 
 public class VideoTypeListFragment extends Fragment {
-
-    private VideoDBOpenHelper dataBaseOpenHelper;
 
     private VideoTypeListAdapter videoTypeListAdapter;
 
@@ -81,8 +79,6 @@ public class VideoTypeListFragment extends Fragment {
     }
 
     private void init(View view) {
-
-        dataBaseOpenHelper = new VideoDBOpenHelper(getContext());
 
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -155,7 +151,7 @@ public class VideoTypeListFragment extends Fragment {
 
     private void setVideoType(String videoType) {
 
-        Cursor cursor = dataBaseOpenHelper.selectVideoTabAllColumns();
+        Cursor cursor = YouTubeManageContract.selectVideoTabAllColumns(getContext());
 
         while(cursor.moveToNext()) {
             if(videoType.equals(cursor.getString(cursor.getColumnIndex(getContext().getResources().getString(R.string.VideoTab))))) {
@@ -164,7 +160,7 @@ public class VideoTypeListFragment extends Fragment {
             }
         }
 
-        if(dataBaseOpenHelper.insertVideoTabColumn(videoType) >0) {
+        if(YouTubeManageContract.insertVideoTabColumn(getContext(), videoType) != null) {
 
             relativeLayout.setVisibility(View.GONE);
             inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);

@@ -16,16 +16,14 @@ import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.solmekim.youtubemanage.Database.VideoDBOpenHelper;
 import com.solmekim.youtubemanage.R;
 import com.solmekim.youtubemanage.Util.Util;
+import com.solmekim.youtubemanage.provider.YouTubeManageContract;
 
 import java.util.HashMap;
 
 
 public class YouTubePlayActivity extends YouTubeBaseActivity {
-
-    private VideoDBOpenHelper dataBaseOpenHelper;
 
     private String VideoURL;
 
@@ -50,8 +48,6 @@ public class YouTubePlayActivity extends YouTubeBaseActivity {
     }
 
     private void init() {
-
-        dataBaseOpenHelper = new VideoDBOpenHelper(getApplicationContext());
 
         inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
         isFullScreen = false;
@@ -187,9 +183,11 @@ public class YouTubePlayActivity extends YouTubeBaseActivity {
 
                         try {
 
-                           if(dataBaseOpenHelper.updateVideoInfo(getIntent().getExtras().getString(getResources().getString(R.string.VideoTab)),
-                                    getIntent().getExtras().getString(getResources().getString(R.string.VideoUploadTime)), getIntent().getExtras().getString(getResources().getString(R.string.VideoUrl)),
-                                    title, description) >0) {
+                           if(YouTubeManageContract.updateVideoInfo(getApplicationContext()
+                                   , getIntent().getExtras().getString(getResources().getString(R.string.VideoTab))
+                                   , getIntent().getExtras().getString(getResources().getString(R.string.VideoUploadTime))
+                                   , getIntent().getExtras().getString(getResources().getString(R.string.VideoUrl))
+                                   , title, description) != -1) {
                                youtubeTitle.setText(title);
                                videoDescription.setText(description);
 
