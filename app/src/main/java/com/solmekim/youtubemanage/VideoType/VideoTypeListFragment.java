@@ -167,7 +167,7 @@ public class VideoTypeListFragment extends Fragment {
             flag = false;
 
             Util.MakeToast(getString(R.string.addNewVideoType), getContext());
-            videoNameList.add(videoType);
+
             videoTypeListAdapter.notifyDataSetChanged();
 
             sendNewVideoTabInfoToActivity.sendNewVideoTabInfo(videoType);

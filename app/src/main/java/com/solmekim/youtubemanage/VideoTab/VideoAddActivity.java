@@ -158,7 +158,7 @@ public class VideoAddActivity extends YouTubeBaseActivity {
                         break;
                     }
 
-                    if (videotypeSpinner.getSelectedItem() == null) {
+                    if (videotypeSpinner != null && videotypeSpinner.getSelectedItem() == null) {
                         Util.MakeToast(getString(R.string.requestNewVideoType), getApplicationContext());
                         finish();
                         break;

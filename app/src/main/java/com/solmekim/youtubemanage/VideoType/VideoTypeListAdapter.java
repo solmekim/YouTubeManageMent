@@ -112,7 +112,6 @@ public class VideoTypeListAdapter extends BaseAdapter {
             Util.MakeToast(context.getString(R.string.delete_videoTab_success),  context);
 
             sendDeleteVideoTabInfoToActivity.sendDeleteVideoTabInfo(videoType);
-            videoNameList.remove(index);
             notifyDataSetChanged();
 
         } else {

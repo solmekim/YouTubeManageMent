@@ -59,8 +59,6 @@ public class VideoTabFragment extends Fragment {
 
     private String selectedValue;
 
-    private int mSizeFlag;
-
     public static VideoTabFragment newInstance(HashMap<String, ArrayList<VideoTab>> videoTabInfoList, String type) {
 
         Bundle args = new Bundle();
@@ -79,7 +77,6 @@ public class VideoTabFragment extends Fragment {
 
         type = getArguments().getString(getContext().getResources().getString(R.string.type));
         videoTabInfoArrayList = getArguments().getParcelableArrayList(getResources().getString(R.string.videoTabInfoList));
-        mSizeFlag = videoTabInfoArrayList.size();
 
         super.onCreate(savedInstanceState);
     }
@@ -346,15 +343,4 @@ public class VideoTabFragment extends Fragment {
             }
         }
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (mSizeFlag != videoTabInfoArrayList.size()) {
-            videoTabRecyclerViewAdapter.notifyDataSetChanged();
-            mSizeFlag = videoTabInfoArrayList.size();
-        }
-    }
-
-
 }

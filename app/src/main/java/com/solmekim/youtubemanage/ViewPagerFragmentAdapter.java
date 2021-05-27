@@ -101,6 +101,11 @@ public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
         return totalTabNameList.size();
     }
 
+    @Override
+    public int getItemPosition(@NonNull Object object) {
+        return POSITION_NONE;
+    }
+
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
@@ -110,6 +115,7 @@ public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
     public void addVideoType(String videoType) {
 
         totalTabNameList.add(videoType);
+        videoNameList.add(videoType);
 
         HashMap<String ,ArrayList<VideoTab>> videoTabList = new HashMap<>();
         ArrayList<VideoTab> videoTab = new ArrayList<>();
@@ -126,6 +132,7 @@ public class ViewPagerFragmentAdapter extends FragmentStatePagerAdapter {
         for (int i=0; i <totalTabNameList.size(); i++) {
             if(videoType.equals(totalTabNameList.get(i))) {
                 totalTabNameList.remove(i);
+                videoNameList.remove(i-1);
                 break;
             }
         }
